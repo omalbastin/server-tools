@@ -128,9 +128,9 @@ def uninstall_hook_for_submodules(cr, registry, model, field=None,
                     if field and not Field.attachment:
                         vars["image"] = main_image.image_main
                     if field_medium and not FieldMedium.attachment:
-                        vars["image_medium"] = main_image.image_medium
-                    if field_small and not FieldSmall.attachment:
-                        vars["image_small"] = main_image.image_small
+                        vars["image_1920"] = main_image.image_1920
+                    # if field_small and not FieldSmall.attachment:
+                    #     vars["image_small"] = main_image.image_small
                     cr.execute(query, vars)
             # fields.Binary(attachment=True), save the ir_attachment record ID
             if field and Field.attachment \
@@ -141,9 +141,9 @@ def uninstall_hook_for_submodules(cr, registry, model, field=None,
                     if field and Field.attachment:
                         Field.write(owner, main_image.image_main)
                     if field_medium and FieldMedium.attachment:
-                        FieldMedium.write(owner, main_image.image_medium)
-                    if field_small and FieldSmall.attachment:
-                        FieldSmall.write(owner, main_image.image_small)
+                        FieldMedium.write(owner, main_image.image_1920)
+                    # if field_small and FieldSmall.attachment:
+                    #     FieldSmall.write(owner, main_image.image_small)
         images.unlink()
 
 

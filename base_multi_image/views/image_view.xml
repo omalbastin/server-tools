@@ -58,7 +58,7 @@
                             }"/>
                     </group>
                     <group string="Preview">
-                        <field name="image_medium"
+                        <field name="image_1920"
                                widget="image"
                                readonly="True"
                                nolabel="1" />
