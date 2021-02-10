@@ -53,6 +53,7 @@
         <field name="model">base_multi_image.image</field>
         <field name="arch" type="xml">
             <tree string="Images">
+                <field name="image_128" widget="image" string="Image"/>
                 <field name="name"/>
                 <field name="storage"/>
                 <field name="owner_model"/>
