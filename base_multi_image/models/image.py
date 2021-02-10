@@ -26,7 +26,7 @@ class Image(models.Model):
     owner_id = fields.Integer(
         "Owner",
         required=True,
-        ondelete="cascade",  # This Integer is really a split Many2one
+        # ondelete="cascade",  # This Integer is really a split Many2one
     )
     owner_model = fields.Char(
         required=True)
@@ -37,7 +37,7 @@ class Image(models.Model):
         store=True,
     )
     storage = fields.Selection(
-        [('url', 'URL'), ('file', 'OS file'), ('db', 'Database'),
+        [('url', 'URL'), ('file', 'OS file path'), ('db', 'Database'),
          ('filestore', 'Filestore')],
         required=True, default='filestore')
     name = fields.Char(
@@ -51,21 +51,24 @@ class Image(models.Model):
         'ir.attachment',
         string='Attachment',
         domain="[('index_content', '=', 'image')]")
+    attachment_image = fields.Image('Attached Image')
     file_db_store = fields.Binary(
         'Image stored in database',
-        filters='*.png,*.jpg,*.gif')
+        attachment=False)
     path = fields.Char(
         "Image path",
         help="Image path")
     url = fields.Char(
         'Image remote URL')
-    image_main = fields.Image(
-        "Full-sized image",
-        compute="_compute_get_image")
+    # image_main = fields.Image(
+    #     "Full-sized image",
+    #     compute="_compute_get_image")
     image_1920 = fields.Image(
         "Full-sized image", max_width=1920, max_height=1920,
-        store=True,
-        related="image_main",)
+        # store=True,
+        compute="_compute_get_image",
+        # related="image_main",
+    )
     # image_medium = fields.Image(
     #     "Medium-sized image",
     #     related="image_1920",
@@ -106,7 +109,7 @@ class Image(models.Model):
     def _compute_get_image(self):
         """Get image data from the right storage type."""
         for s in self:
-            s.image_main = getattr(s, "_get_image_from_%s" % s.storage)()
+            s.image_1920 = getattr(s, "_get_image_from_%s" % s.storage)()
 
     @api.depends("owner_id", "owner_model")
     def _compute_show_technical(self):
@@ -116,7 +119,11 @@ class Image(models.Model):
             for f in ("id", "model"))
 
     def _get_image_from_filestore(self):
-        return self.attachment_id.datas
+        if self.attachment_id:
+            return self.attachment_id.datas
+        else:
+            return self.attachment_image
+
 
     def _get_image_from_db(self):
         return self.file_db_store
@@ -202,9 +209,9 @@ class Image(models.Model):
                 raise exceptions.ValidationError(
                     _('You must provide an attached file for the image.'))
 
-    @api.constrains('storage', 'attachment_id')
+    @api.constrains('storage', 'attachment_image')
     def _check_attachment_id(self):
         for record in self:
-            if record.storage == 'filestore' and not record.attachment_id:
+            if record.storage == 'filestore' and not record.attachment_image:
                 raise exceptions.ValidationError(
                     _('You must provide an attachment for the image.'))

@@ -16,7 +16,7 @@ class Owner(models.AbstractModel):
         string='Images',
         domain=lambda self: [("owner_model", "=", self._name)],
         copy=True)
-    image_main = fields.Image(
+    image_1920 = fields.Image(
         string="Main image",
         store=False,
         compute="_compute_get_multi_image",
@@ -39,10 +39,11 @@ class Owner(models.AbstractModel):
         This is provided as a compatibility layer for submodels that already
         had one image per record.
         """
+        print("_compute_get_multi_image>>>", self)
         for s in self:
             first = s.image_ids[:1]
-            s.image_main = first.image_main
             s.image_1920 = first.image_1920
+            # s.image_1920 = first.image_1920
             # s.image_main_medium = first.image_medium
             # s.image_main_small = first.image_small
 
@@ -53,11 +54,12 @@ class Owner(models.AbstractModel):
         had one image per record.
         """
         # Values to save
+        print("_set_multi_image>>>", self, name)
         multi_image_obj = self.env['base_multi_image.image']
         storage = multi_image_obj.default_get(['storage'])['storage']
         if storage != "db":
             storage = "filestore"
-        atts = self.env['ir.attachment'].sudo()
+        # atts = self.env['ir.attachment'].sudo()
 
         values = {"storage": storage,
                   "owner_model": self._name,
@@ -76,19 +78,20 @@ class Owner(models.AbstractModel):
             })
         else:
 
-            if image_rec.storage == 'filestore':
-                attachment_id = image_rec.attachment_id
-                attachment_id.write({'datas': image})
-            else:
-                attachment_id = atts.create({
-                        # 'name': self.name,
-                        'res_model': self._name,
-                        # 'res_field': 'image_1920',
-                        'res_id': self.id,
-                        'type': 'binary',
-                        'datas': image,
-                    })
-                values["attachment_id"] = attachment_id.id
+            # if image_rec.storage == 'filestore':
+            values.update({'attachment_image': image})
+            #     attachment_id = image_rec.attachment_id
+            #     attachment_id.write({'datas': image})
+            # else:
+            #     attachment_id = atts.create({
+            #             # 'name': self.name,
+            #             'res_model': self._name,
+            #             # 'res_field': 'image_1920',
+            #             'res_id': self.id,
+            #             'type': 'binary',
+            #             'datas': image,
+            #         })
+            #     values["attachment_id"] = attachment_id.id
 
         if image_rec:
             #write
@@ -100,7 +103,7 @@ class Owner(models.AbstractModel):
 
     def _inverse_set_multi_image_main(self):
         for owner in self:
-            owner._set_multi_image(owner.image_main)
+            owner._set_multi_image(owner.image_1920)
 
     # def _set_multi_image_main_medium(self):
     #     self._set_multi_image(self.image_main_medium)
