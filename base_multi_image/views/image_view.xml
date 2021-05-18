@@ -71,7 +71,7 @@
                 <field name="id"/>
                 <field name="name"/>
                 <field name="storage"/>
-                <field name="image_1920"/>
+                <field name="image_128"/>
                 <field name="sequence"/>
                 <templates>
                     <t t-name="kanban-box">
@@ -85,7 +85,7 @@
                                         t-att-alt="record.name"
                                         t-att-src="kanban_image(
                                       'base_multi_image.image',
-                                      'image_1920',
+                                      'image_128',
                                       record.id.raw_value)"
                                         class="oe_kanban_image"/>
                                 </a>
