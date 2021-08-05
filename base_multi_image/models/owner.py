@@ -39,7 +39,6 @@ class Owner(models.AbstractModel):
         This is provided as a compatibility layer for submodels that already
         had one image per record.
         """
-        print("_compute_get_multi_image>>>", self)
         for s in self:
             first = s.image_ids[:1]
             s.image_1920 = first.image_1920
@@ -54,7 +53,6 @@ class Owner(models.AbstractModel):
         had one image per record.
         """
         # Values to save
-        print("_set_multi_image>>>", self, name)
         multi_image_obj = self.env['base_multi_image.image']
         storage = multi_image_obj.default_get(['storage'])['storage']
         if storage != "db":
