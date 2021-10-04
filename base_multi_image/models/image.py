@@ -209,7 +209,7 @@ class Image(models.Model):
                 raise exceptions.ValidationError(
                     _('You must provide an attached file for the image.'))
 
-    @api.constrains('storage', 'attachment_image')
+    @api.constrains('storage', 'attachment_image', 'attachment_id')
     def _check_attachment_id(self):
         for record in self:
             if record.storage == 'filestore' and (not record.attachment_image and not record.attachment_id):
