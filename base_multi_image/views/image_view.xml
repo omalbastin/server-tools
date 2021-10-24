@@ -27,8 +27,9 @@
                                    widget="url"/>
                             <field name="path" attrs="{'invisible': [('storage', '!=', 'file')],'required': [('storage', '=', 'file')],}"/>
                             <field name="filename" invisible="1"/>
-                            <field name="attachment_image" attrs="{'invisible': [('storage', '!=', 'filestore')],'required': [('storage', '=', 'filestore')],}"
+                            <field name="attachment_image" attrs="{'invisible': [('storage', '!=', 'filestore')],}"
                                    filename="filename"/>
+                            <field name="attachment_id" attrs="{'invisible': [('storage', '!=', 'filestore')],}" help="For storage filestore, attachment id or image is needed"/>
                             <field name="file_db_store" attrs="{'invisible': [('storage', '!=', 'db')],'required': [('storage', '=', 'db')],}"
                                    filename="filename"/>
 
