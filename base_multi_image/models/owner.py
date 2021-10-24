@@ -20,7 +20,9 @@ class Owner(models.AbstractModel):
         string="Main image",
         store=False,
         compute="_compute_get_multi_image",
-        inverse="_inverse_set_multi_image_main")
+        # inverse="_inverse_set_multi_image_main"
+        readonly=1
+    )
     # image_main_medium = fields.Binary(
     #     string="Medium image",
     #     compute="_get_multi_image",
@@ -53,12 +55,13 @@ class Owner(models.AbstractModel):
         had one image per record.
         """
         # Values to save
+        print(1111, image, name)
         multi_image_obj = self.env['base_multi_image.image']
         storage = multi_image_obj.default_get(['storage'])['storage']
         if storage != "db":
             storage = "filestore"
         # atts = self.env['ir.attachment'].sudo()
-
+        print(22222)
         values = {"storage": storage,
                   "owner_model": self._name,
                   "owner_id": self.id}
@@ -66,16 +69,19 @@ class Owner(models.AbstractModel):
             values["name"] = name
         image_rec = False
         if self.image_ids:
+            print(3333333333)
             image_rec = self.image_ids[0]
         if not image:
+            print(4444444444)
             image_rec and image_rec.unlink()
             return True
         if storage == "db":
+            print(55555555555)
             values.update({
                 "file_db_store": tools.image_resize_image_big(image),
             })
         else:
-
+            print(66666666666)
             # if image_rec.storage == 'filestore':
             values.update({'attachment_image': image})
             #     attachment_id = image_rec.attachment_id
@@ -93,8 +99,10 @@ class Owner(models.AbstractModel):
 
         if image_rec:
             #write
+            print(77777777777)
             image_rec.write(values)
         else:
+            print(888888888888)
             #create
             values.setdefault("name", name or _("Main image"))
             self.image_ids = [(0, 0, values)]
