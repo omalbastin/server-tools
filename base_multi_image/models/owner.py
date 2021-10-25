@@ -18,7 +18,7 @@ class Owner(models.AbstractModel):
         copy=True)
     image_1920 = fields.Image(
         string="Main image",
-        store=False,
+        store=True,
         compute="_compute_get_multi_image",
         # inverse="_inverse_set_multi_image_main"
         readonly=1
