@@ -34,7 +34,7 @@ class Owner(models.AbstractModel):
     #     inverse="_set_multi_image_main_small",
     #     store=False)
 
-    @api.depends('image_ids')
+    @api.depends('image_ids','manufacturer_purl')
     def _compute_get_multi_image(self):
         """Get the main image for this object.
 
