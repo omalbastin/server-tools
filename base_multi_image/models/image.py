@@ -105,7 +105,7 @@ class Image(models.Model):
             if s.owner_model:
                 s.owner_ref_id = "{0.owner_model},{0.owner_id}".format(s)
 
-    @api.depends('storage', 'path', 'file_db_store', 'url')
+    @api.depends('storage', 'path', 'file_db_store', 'url','attachment_image','attachment_id')
     def _compute_get_image(self):
         """Get image data from the right storage type."""
         for s in self:
